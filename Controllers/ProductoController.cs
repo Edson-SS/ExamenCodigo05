@@ -3,6 +3,7 @@ using ExamenCodigo.Request;
 using ExamenCodigo.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExamenCodigo.Controllers
 {
@@ -43,12 +44,12 @@ namespace ExamenCodigo.Controllers
         {
             using (var context = new DemoContext())
             {
-                var producto = context.Productos.ToList();
-                var responseProducto = producto.Select(p => new ProductoResponse
+                var responseProducto = context.Productos.Include(x=>x.categoria).Select(p => new ProductoResponse
                 {
                     ProductoID = p.ProductoID,
-                    Nombre= p.Nombre,
-                    Precio= p.Precio,
+                    Nombre = p.Nombre,
+                    Precio = p.Precio,
+                    NombreCategoria = p.categoria.Nombre,
                 }).ToList();
                 return responseProducto;
             }
@@ -59,16 +60,17 @@ namespace ExamenCodigo.Controllers
         {
             using (var context = new DemoContext())
             {
-                var producto = context.Productos.Find(id);
-                var categoria = context.Categorias.Find(producto.CategoriaID);
-                ProductoResponse productoResponse = new ProductoResponse
-                {
-                    ProductoID = producto.ProductoID,
-                    Nombre = producto.Nombre,
-                    Precio = producto.Precio,
-                    NombreCategoria = categoria.Nombre,
-                };
-                return productoResponse;
+                var producto = context.Productos
+                    .Include(x => x.categoria)
+                    .Where(y=> y.ProductoID==id)
+                    .Select(p => new ProductoResponse
+                    {
+                        ProductoID = p.ProductoID,
+                        Nombre = p.Nombre,
+                        Precio = p.Precio,
+                        NombreCategoria = p.categoria.Nombre,
+                    }).FirstOrDefault();
+                return producto;
             }
         }
     }

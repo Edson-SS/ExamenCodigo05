@@ -1,4 +1,5 @@
-﻿using ExamenCodigo.Request;
+﻿using ExamenCodigo.Models;
+using ExamenCodigo.Request;
 
 namespace ExamenCodigo.Response
 {
@@ -7,5 +8,6 @@ namespace ExamenCodigo.Response
         public int CategoriaID { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
+
     }
 }

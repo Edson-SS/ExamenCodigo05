@@ -52,6 +52,7 @@ namespace ExamenCodigo.Controllers
                     Nombre = c.Nombre,
                     Descripcion = c.Descripcion,
                 }).ToList();
+
                 return responseCategoria;
             }
         }
